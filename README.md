@@ -6,31 +6,35 @@ Compile all nova components in one single command run.
 Follow the instructions below.
 
 
-### Create new file: deploy_build.sh
+### Create new file: deploy.sh
 ```
 #!/bin/sh
 # Builds assets for each nova component.
 # Executed by `npm run deploy`
 
-for d in nova-components/*/ ;
+# Install npm for root directory.
+npm install --no-optional 
+
+for d in ./nova-components/*/ ;
     do (
         # Enter each component folder.
-        cd "$d" &&
+        cd "$d"
 
-        # Install required packages for compile.
-        npm install &&
+        # Symlink to root's node_modules for faster deploy.
+        if [ ! -L "node_modules" ]; then
+            ln -s ../../node_modules/ node_modules
+            echo "Created symlink in: $d"
+        fi
 
-        # Compille assets.
-        # Cache clear done by latter deploy hook.
-        npm run prod &&
-
-        # Revert npm install.
-        rm -rf node_modules
+        # Compille component assets.
+        if [ -f "package.json" ]; then
+            npm run prod
+        fi
     );
 done
 ```
 
-### In file: package.json
+### In file: package.json (OPTIONAL)
 
 Create new script, like so:
 > "deploy": "chmod +x ./deploy_build.sh && ./deploy_build.sh"
