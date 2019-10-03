@@ -34,11 +34,23 @@ for d in ./nova-components/*/ ;
 done
 ```
 
-### In file: package.json (OPTIONAL)
+### In file: package.json
 
 Create new script, like so:
 > "deploy": "chmod +x ./deploy_build.sh && ./deploy_build.sh"
 
+
+Add this dependency to devdependencies. This is required since most nova
+components are having it as a required dependency.
+
+> "laravel-nova": "^1.0"
+
+```
+    "devDependencies": {
+        ....
+        "laravel-nova": "^1.0"
+    }
+```
 
 ### In command line: Run script
 
